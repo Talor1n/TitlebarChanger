@@ -1,12 +1,16 @@
 # Titlebar Changer
 
-**Titlebar Changer** is a mod for Minecraft that allows you to customize the appearance of the window titlebar, including colors, text, and borders. Full functionality of the mod is available only on Windows 11; on Windows 10, features are limited to changing the titlebar color to dark.
+**Titlebar Changer** is a mod for Minecraft that allows you to customize the appearance of the window titlebar,
+including colors, text, and borders. Full functionality of the mod is available only on Windows 11; on Windows 10,
+features are limited to changing the titlebar color to dark.
 
 ## Download and Additional Information
 
-You can download the mod from [Modrinth](https://modrinth.com/project/titlebar-changer). There, you will also find additional information and updates.
+You can download the mod from [Modrinth](https://modrinth.com/project/titlebar-changer). There, you will also find
+additional information and updates.
 
 ## Main Features
+
 - **Change Window Titlebar Color**: Full customization is available only on Windows 11.
 - **Set Titlebar Color**: On Windows 10, you can only change the titlebar color to dark.
 
@@ -16,7 +20,8 @@ You can download the mod from [Modrinth](https://modrinth.com/project/titlebar-c
 
    ![Opening the Settings Menu](img/open-settings-menu.png)
 
-2. **Configure Colors**: In the settings menu, you can select colors for the window titlebar, title, and borders. Choose your desired colors from the palette.
+2. **Configure Colors**: In the settings menu, you can select colors for the window titlebar, title, and borders. Choose
+   your desired colors from the palette.
 
    ![Settings Menu](img/settings-menu.png)
 
@@ -30,7 +35,8 @@ Here are a few examples of changing the window titlebar colors:
 
 ## Configuration File
 
-The mod uses a configuration file that allows you to manually set colors. The configuration file is located in the `config/` directory and is named `titlebar_settings.json`. Here is an example of the file content:
+The mod uses a configuration file that allows you to manually set colors. The configuration file is located in the
+`config/` directory and is named `titlebar_settings.json`. Here is an example of the file content:
 
 ```json
 {
@@ -57,15 +63,17 @@ The mod uses a configuration file that allows you to manually set colors. The co
 ```
 
 - **theme**: Titlebar theme. Available values:
-  - `0`: Light
-  - `1`: Dark
-  - `2`: Custom (only in this theme can you customize colors).
+    - `0`: Light
+    - `1`: Dark
+    - `2`: Custom (only in this theme can you customize colors).
 - **corner**: Window corner style. Available values:
-  - `0`: Rectangular
-  - `1`: Default
-  - `2`: Semi-Rounded
+    - `0`: Rectangular
+    - `1`: Default
+    - `2`: Semi-Rounded
 - **titleBarColor**: Titlebar color (RGB). Customizable only in the custom theme.
 - **titleBarTextColor**: Title text color (RGB). Customizable only in the custom theme.
 - **titleBarStrokeColor**: Titlebar border color (RGB). Customizable only in the custom theme.
-- **showTheMenu**: Show the settings menu. If you are a pack creator and do not want users to edit the window in-game, you can disable the menu in the settings.
-- **showWarnScreen**: Show warning screen. If the system is not suitable for the mod, the mod will display a warning. After the first warning, the mod will automatically set this to `false`, but you can disable the warning entirely.
+- **showTheMenu**: Show the settings menu. If you are a pack creator and do not want users to edit the window in-game,
+  you can disable the menu in the settings.
+- **showWarnScreen**: Show warning screen. If the system is not suitable for the mod, the mod will display a warning.
+  After the first warning, the mod will automatically set this to `false`, but you can disable the warning entirely.

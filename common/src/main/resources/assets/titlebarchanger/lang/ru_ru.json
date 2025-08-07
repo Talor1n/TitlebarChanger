@@ -1,21 +1,17 @@
 {
   "gui.titlebar_settings": "Настройки окна",
-
   "gui.window_theme_dark": "Тема: Тёмная",
   "gui.window_theme_light": "Тема: Светлая",
   "gui.window_theme_custom": "Тема: Своя",
   "gui.window_style_rectangular": "Угол окна: Прямоугольный",
   "gui.window_style_default": "Угол окна: По умолчанию",
   "gui.window_style_semi_rounded": "Угол окна: Закруглённый",
-
   "gui.set_titlebar_color": "Задать цвет окна",
   "gui.set_titlebar_text_color": "Задать цвет текста окна",
   "gui.set_titlebar_stroke_color": "Задать цвет обводки окна",
-
   "gui.red": "Красный",
   "gui.green": "Зелёный",
   "gui.blue": "Синий",
-
   "gui.warning_title": "Внимание",
   "gui.warning_desc": "Ваша операционная система устарела для использования мода. Некоторые функции могут быть ограничены. Это сообщение больше не появится.",
   "gui.warning_desc_not_suitable": "Ваша операционная система не соответствует требованиям для использования мода. Некоторые функции могут работать неправильно или быть ограничены. Это сообщение больше не появится.",

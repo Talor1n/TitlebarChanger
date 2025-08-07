@@ -6,7 +6,7 @@ license = "GNU GPL 3.0"
 modId = "titlebarchanger"
 version = "${version}"
 displayName = "TitlebarChanger"
-authors = "Thal0rin"
+authors = "Talor1n"
 description = "Minecraft mod that offers advanced customization of window appearance, including titlebar, title, and border colors. Full functionality is available only on Windows 11; on Windows 10, the mod's features are limited to changing the titlebar color to dark :)"
 logoFile = "logo.png"
 
@@ -20,7 +20,7 @@ side = "CLIENT"
 [[dependencies.titlebarchanger]]
 modId = "minecraft"
 mandatory = true
-versionRange="[1.21,)"
+versionRange = "[1.21,)"
 ordering = "NONE"
 side = "CLIENT"
 
