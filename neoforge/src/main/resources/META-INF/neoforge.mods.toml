@@ -26,4 +26,4 @@ side = "CLIENT"
 
 
 [[mixins]]
-config = "titlebarchanger.mixins.json"
+titlebarChangerConfig = "titlebarchanger.mixins.json"

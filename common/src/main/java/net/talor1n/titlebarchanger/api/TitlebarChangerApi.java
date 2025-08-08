@@ -1,6 +1,6 @@
 package net.talor1n.titlebarchanger.api;
 
-import net.talor1n.titlebarchanger.config.Config;
+import net.talor1n.titlebarchanger.config.TitlebarChangerConfig;
 import net.talor1n.titlebarchanger.utils.color.RGBA;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowAttribute;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowCornerPreference;
@@ -181,8 +181,8 @@ public interface TitlebarChangerApi {
      */
     boolean setDarkMode(DwmWindowThemeAttribute dwmWindowThemeAttribute);
 
-    default boolean isCustomThemeAttribute(Config config) {
-        return config.getTheme() == CUSTOM;
+    default boolean isCustomThemeAttribute(TitlebarChangerConfig titlebarChangerConfig) {
+        return titlebarChangerConfig.getTheme() == CUSTOM;
     }
 
     /**
@@ -251,17 +251,7 @@ public interface TitlebarChangerApi {
      */
     boolean setTextColor(RGBA color);
 
-    /**
-     * Loads and applies the style settings from the given configuration
-     * without persisting them.
-     * <p>
-     * This will update theme, corner radius, title bar colors, stroke color,
-     * menu visibility, warning screen, etc., according to the values in {@code config}.
-     *
-     * @param config the {@link Config} instance containing style properties to apply
-     * @return {@code true} if the style was applied successfully; {@code false} otherwise
-     */
     boolean loadStyle();
 
-    boolean saveConfigIfSuccess(boolean success, Consumer<Config> config);
+    boolean saveConfigIfSuccess(boolean success, Consumer<TitlebarChangerConfig> config);
 }

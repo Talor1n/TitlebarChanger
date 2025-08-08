@@ -140,6 +140,9 @@ public class RGBA {
      * @return HEX color string in format "#RRGGBB"
      */
     public String toHex() {
+        if (r < 0 || g < 0 || b < 0) {
+            return String.valueOf(toHexInt());
+        }
         return String.format("#%02X%02X%02X", r, g, b);
     }
 
@@ -149,6 +152,9 @@ public class RGBA {
      * @return HEX color string in format "#RRGGBBAA"
      */
     public String toHexWithAlpha() {
+        if (r < 0 || g < 0 || b < 0 || a < 0) {
+            return String.valueOf(toHexInt());
+        }
         return String.format("#%02X%02X%02X%02X", r, g, b, a);
     }
 
@@ -179,6 +185,8 @@ public class RGBA {
      * @return integer representation of the color (alpha ignored)
      */
     public int toHexInt() {
+        if (r < 0 || g < 0 || b < 0)
+            return -1;
         return (r << 16) | (g << 8) | b;
     }
 
@@ -257,7 +265,7 @@ public class RGBA {
      * @throws IllegalArgumentException if value is out of [0-255] range
      */
     private static int validate(int value, String componentName) {
-        if (value < 0 || value > 255) {
+        if (value < -1 || value > 255) {
             throw new IllegalArgumentException(
                     String.format("%s component out of range [0-255]: %d", componentName, value)
             );

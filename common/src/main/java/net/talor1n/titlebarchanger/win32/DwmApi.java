@@ -46,7 +46,7 @@ public interface DwmApi extends StdCallLibrary {
     private static DwmApi createInstance() {
         try {
             DwmApi instance = Native.load("dwmapi", DwmApi.class, W32APIOptions.DEFAULT_OPTIONS);
-            TitlebarChanger.LOGGER.info("DWM API loaded successfully");
+            TitlebarChanger.LOGGER.debug("DWM API loaded successfully");
             return instance;
         } catch (UnsatisfiedLinkError e) {
             TitlebarChanger.LOGGER.error("Failed to load DWM API: {}. DWM features will be unavailable.", e.getMessage());

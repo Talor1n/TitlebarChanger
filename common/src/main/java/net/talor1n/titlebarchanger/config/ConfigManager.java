@@ -32,11 +32,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *
  * <h3>Usage:</h3>
  * <pre>
- * // Initialize with config file path
- * ConfigManager.INSTANCE.initialize(Paths.get("config.json"));
+ * // Initialize with titlebarChangerConfig file path
+ * ConfigManager.INSTANCE.initialize(Paths.get("titlebarChangerConfig.json"));
  *
  * // Access configuration
- * Config config = ConfigManager.INSTANCE.getConfig();
+ * TitlebarChangerConfig titlebarChangerConfig = ConfigManager.INSTANCE.getTitlebarChangerConfig();
  *
  * // Update and save
  * ConfigManager.INSTANCE.updateAndSave(newConfig);
@@ -59,28 +59,22 @@ public enum ConfigManager {
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
-    /**
-     * -- GETTER --
-     * Gets the current configuration file path.
-     *
-     * @return the path to the configuration file, or null if not initialized
-     */
     @Getter
     @Setter
     private Path configPath;
 
     @Getter
-    private volatile Config config;
+    private volatile TitlebarChangerConfig titlebarChangerConfig;
 
     /**
-     * Initializes the configuration manager with the specified config file path.
+     * Initializes the configuration manager with the specified titlebarChangerConfig file path.
      *
      * @param configPath path to the configuration file
      * @throws IllegalArgumentException if configPath is null
      */
     public void initialize(Path configPath) {
         if (configPath == null) {
-            throw new IllegalArgumentException("Config path cannot be null");
+            throw new IllegalArgumentException("TitlebarChangerConfig path cannot be null");
         }
 
         lock.writeLock().lock();
@@ -96,7 +90,7 @@ public enum ConfigManager {
     /**
      * Loads configuration from the file system.
      * <p>
-     * If the config file doesn't exist, creates a default configuration.
+     * If the titlebarChangerConfig file doesn't exist, creates a default configuration.
      * If the file is corrupted, creates a backup and uses default settings.
      *
      * @throws IllegalStateException if not initialized
@@ -122,23 +116,23 @@ public enum ConfigManager {
     private void loadFromFile() {
         try {
             String json = Files.readString(configPath);
-            Config loadedConfig = GSON.fromJson(json, Config.class);
+            TitlebarChangerConfig loadedTitlebarChangerConfig = GSON.fromJson(json, TitlebarChangerConfig.class);
 
-            if (isValidConfig(loadedConfig)) {
-                this.config = loadedConfig;
+            if (isValidConfig(loadedTitlebarChangerConfig)) {
+                this.titlebarChangerConfig = loadedTitlebarChangerConfig;
                 TitlebarChanger.LOGGER.info("Configuration loaded successfully from: {}", configPath);
             } else {
                 TitlebarChanger.LOGGER.warn("Invalid configuration detected, creating backup and using defaults");
                 createBackupAndDefault();
             }
         } catch (IOException e) {
-            TitlebarChanger.LOGGER.error("Failed to read config file: {} - {}", configPath, e.getMessage());
+            TitlebarChanger.LOGGER.error("Failed to read titlebarChangerConfig file: {} - {}", configPath, e.getMessage());
             createDefaultConfig();
         } catch (JsonSyntaxException e) {
-            TitlebarChanger.LOGGER.error("Malformed JSON in config file: {} - {}", configPath, e.getMessage());
+            TitlebarChanger.LOGGER.error("Malformed JSON in titlebarChangerConfig file: {} - {}", configPath, e.getMessage());
             createBackupAndDefault();
         } catch (Exception e) {
-            TitlebarChanger.LOGGER.error("Unexpected error loading config: {} - {}", configPath, e.getMessage());
+            TitlebarChanger.LOGGER.error("Unexpected error loading titlebarChangerConfig: {} - {}", configPath, e.getMessage());
             createDefaultConfig();
         }
     }
@@ -147,13 +141,13 @@ public enum ConfigManager {
      * Creates a default configuration and saves it.
      */
     private void createDefaultConfig() {
-        this.config = Config.builder().build(); // Use builder for default values
+        this.titlebarChangerConfig = TitlebarChangerConfig.builder().build(); // Use builder for default values
         saveConfig();
         TitlebarChanger.LOGGER.info("Created default configuration at: {}", configPath);
     }
 
     /**
-     * Creates a backup of the corrupted config file and creates a default config.
+     * Creates a backup of the corrupted titlebarChangerConfig file and creates a default titlebarChangerConfig.
      */
     private void createBackupAndDefault() {
         try {
@@ -161,7 +155,7 @@ public enum ConfigManager {
                     configPath.getFileName() + ".backup." + System.currentTimeMillis()
             );
             Files.copy(configPath, backupPath, StandardCopyOption.REPLACE_EXISTING);
-            TitlebarChanger.LOGGER.info("Corrupted config backed up to: {}", backupPath);
+            TitlebarChanger.LOGGER.info("Corrupted titlebarChangerConfig backed up to: {}", backupPath);
         } catch (IOException e) {
             TitlebarChanger.LOGGER.warn("Failed to create backup: {}", e.getMessage());
         }
@@ -171,12 +165,12 @@ public enum ConfigManager {
     /**
      * Saves the current configuration to file.
      *
-     * @throws IllegalStateException if not initialized or config is null
+     * @throws IllegalStateException if not initialized or titlebarChangerConfig is null
      */
     public void saveConfig() {
         ensureInitialized();
 
-        if (config == null) {
+        if (titlebarChangerConfig == null) {
             TitlebarChanger.LOGGER.warn("Cannot save: configuration is null");
             return;
         }
@@ -188,39 +182,39 @@ public enum ConfigManager {
                 Files.createDirectories(configPath.getParent());
             }
 
-            String json = GSON.toJson(config);
+            String json = GSON.toJson(titlebarChangerConfig);
             Files.writeString(configPath, json);
 
             TitlebarChanger.LOGGER.debug("Configuration saved to: {}", configPath);
         } catch (IOException e) {
-            TitlebarChanger.LOGGER.error("Failed to save config to: {} - {}", configPath, e.getMessage());
+            TitlebarChanger.LOGGER.error("Failed to save titlebarChangerConfig to: {} - {}", configPath, e.getMessage());
         } finally {
             lock.readLock().unlock();
         }
     }
 
     /**
-     * Saves a specific configuration to file without changing the current config.
+     * Saves a specific configuration to file without changing the current titlebarChangerConfig.
      *
-     * @param configToSave the configuration to save
-     * @throws IllegalArgumentException if configToSave is null or invalid
+     * @param titlebarChangerConfigToSave the configuration to save
+     * @throws IllegalArgumentException if titlebarChangerConfigToSave is null or invalid
      * @throws IllegalStateException    if not initialized
      */
-    public void saveConfig(Config configToSave) {
+    public void saveConfig(TitlebarChangerConfig titlebarChangerConfigToSave) {
         ensureInitialized();
 
-        if (configToSave == null) {
+        if (titlebarChangerConfigToSave == null) {
             throw new IllegalArgumentException("Configuration to save cannot be null");
         }
 
-        if (!isValidConfig(configToSave)) {
+        if (!isValidConfig(titlebarChangerConfigToSave)) {
             throw new IllegalArgumentException("Invalid configuration provided");
         }
 
         lock.writeLock().lock();
         try {
-            Config previousConfig = this.config;
-            this.config = configToSave;
+            TitlebarChangerConfig previousTitlebarChangerConfig = this.titlebarChangerConfig;
+            this.titlebarChangerConfig = titlebarChangerConfigToSave;
             saveConfig();
             TitlebarChanger.LOGGER.debug("External configuration saved");
         } finally {
@@ -231,21 +225,21 @@ public enum ConfigManager {
     /**
      * Updates the configuration and automatically saves it to file.
      *
-     * @param newConfig the new configuration to set
-     * @throws IllegalArgumentException if newConfig is null or invalid
+     * @param newTitlebarChangerConfig the new configuration to set
+     * @throws IllegalArgumentException if newTitlebarChangerConfig is null or invalid
      * @throws IllegalStateException    if not initialized
      */
-    public void updateAndSave(Config newConfig) {
+    public void updateAndSave(TitlebarChangerConfig newTitlebarChangerConfig) {
         ensureInitialized();
 
-        if (newConfig == null) {
+        if (newTitlebarChangerConfig == null) {
             throw new IllegalArgumentException("Configuration cannot be null");
         }
 
         lock.writeLock().lock();
         try {
-            if (isValidConfig(newConfig)) {
-                this.config = newConfig;
+            if (isValidConfig(newTitlebarChangerConfig)) {
+                this.titlebarChangerConfig = newTitlebarChangerConfig;
                 saveConfig();
                 TitlebarChanger.LOGGER.debug("Configuration updated and saved");
             } else {
@@ -270,35 +264,35 @@ public enum ConfigManager {
     /**
      * Checks if the configuration manager is properly initialized.
      *
-     * @return true if initialized with a valid path and config
+     * @return true if initialized with a valid path and titlebarChangerConfig
      */
     public boolean isInitialized() {
-        return configPath != null && config != null;
+        return configPath != null && titlebarChangerConfig != null;
     }
 
     /**
      * Validates that a configuration object has valid values.
      *
-     * @param config the configuration to validate
+     * @param titlebarChangerConfig the configuration to validate
      * @return true if the configuration is valid
      */
-    private boolean isValidConfig(Config config) {
-        if (config == null) {
+    private boolean isValidConfig(TitlebarChangerConfig titlebarChangerConfig) {
+        if (titlebarChangerConfig == null) {
             return false;
         }
 
         try {
             // Check for null theme and corner preferences
-            if (config.getTheme() == null || config.getCorner() == null) {
-                TitlebarChanger.LOGGER.debug("Config validation failed: null theme or corner preference");
+            if (titlebarChangerConfig.getTheme() == null || titlebarChangerConfig.getCorner() == null) {
+                TitlebarChanger.LOGGER.debug("TitlebarChangerConfig validation failed: null theme or corner preference");
                 return false;
             }
 
             // Validate color objects are not null (they can be RGBA.EMPTY for "no color")
-            if (config.getCaptionColor() == null ||
-                    config.getBorderColor() == null ||
-                    config.getTextColor() == null) {
-                TitlebarChanger.LOGGER.debug("Config validation failed: null color values");
+            if (titlebarChangerConfig.getCaptionColor() == null ||
+                    titlebarChangerConfig.getBorderColor() == null ||
+                    titlebarChangerConfig.getTextColor() == null) {
+                TitlebarChanger.LOGGER.debug("TitlebarChangerConfig validation failed: null color values");
                 return false;
             }
 
@@ -306,37 +300,8 @@ public enum ConfigManager {
             return true;
 
         } catch (Exception e) {
-            TitlebarChanger.LOGGER.debug("Config validation failed with exception: {}", e.getMessage());
+            TitlebarChanger.LOGGER.debug("TitlebarChangerConfig validation failed with exception: {}", e.getMessage());
             return false;
-        }
-    }
-
-    /**
-     * Creates a copy of the current configuration for safe modification.
-     *
-     * @return a new Config instance with the same values as the current config
-     * @throws IllegalStateException if not initialized or config is null
-     */
-    public Config copyCurrentConfig() {
-        ensureInitialized();
-
-        if (config == null) {
-            throw new IllegalStateException("No configuration available to copy");
-        }
-
-        lock.readLock().lock();
-        try {
-            return Config.builder()
-                    .theme(config.getTheme())
-                    .corner(config.getCorner())
-                    .captionColor(config.getCaptionColor())
-                    .borderColor(config.getBorderColor())
-                    .textColor(config.getTextColor())
-                    .showTheMenu(config.isShowTheMenu())
-                    .showWarnScreen(config.isShowWarnScreen())
-                    .build();
-        } finally {
-            lock.readLock().unlock();
         }
     }
 
@@ -350,7 +315,7 @@ public enum ConfigManager {
 
         lock.writeLock().lock();
         try {
-            this.config = Config.builder().build();
+            this.titlebarChangerConfig = TitlebarChangerConfig.builder().build();
             saveConfig();
             TitlebarChanger.LOGGER.info("Configuration reset to defaults");
         } finally {

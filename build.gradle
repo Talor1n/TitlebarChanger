@@ -23,6 +23,11 @@ subprojects {
     }
 
     repositories {
+        maven { url = "https://maven.shedaniel.me/" }
+        maven {
+            name = "Terraformers"
+            url = "https://maven.terraformersmc.com/"
+        }
     }
 
     dependencies {

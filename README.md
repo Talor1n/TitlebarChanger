@@ -36,7 +36,7 @@ Here are a few examples of changing the window titlebar colors:
 ## Configuration File
 
 The mod uses a configuration file that allows you to manually set colors. The configuration file is located in the
-`config/` directory and is named `titlebar_settings.json`. Here is an example of the file content:
+`titlebarChangerConfig/` directory and is named `titlebar_settings.json`. Here is an example of the file content:
 
 ```json
 {

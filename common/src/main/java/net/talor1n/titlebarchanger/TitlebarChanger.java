@@ -4,10 +4,13 @@ import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinNT;
+import me.shedaniel.clothconfig2.ClothConfigInitializer;
 import net.minecraft.client.Minecraft;
 import net.talor1n.titlebarchanger.api.TitlebarChangerApi;
-import net.talor1n.titlebarchanger.config.Config;
+import net.talor1n.titlebarchanger.compat.ClothConfigCompat;
+import net.talor1n.titlebarchanger.config.TitlebarChangerConfig;
 import net.talor1n.titlebarchanger.config.ConfigManager;
+import net.talor1n.titlebarchanger.utils.PlatformHelper;
 import net.talor1n.titlebarchanger.utils.color.RGBA;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowAttribute;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowCornerPreference;
@@ -32,7 +35,7 @@ public final class TitlebarChanger {
 
     public static void init(Path configPath) {
         ConfigManager.INSTANCE.initialize(configPath);
-        api.loadStyle();
+        Minecraft.getInstance().execute(api::loadStyle);
     }
 
     static class TitlebarChangerApiImpl implements TitlebarChangerApi {
@@ -49,12 +52,19 @@ public final class TitlebarChanger {
             return ConfigManager.INSTANCE;
         }
 
-        private Config getConfig() {
-            return configManager().getConfig();
+        private TitlebarChangerConfig getConfig() {
+            return configManager().getTitlebarChangerConfig();
         }
 
         @Override
         public SystemStatus checkSystem() {
+            // Debug Mode :)
+            var debug = System.getProperty("titlebarchanger.forceSystem");
+            if (debug != null) {
+                LOGGER.warn("Forced system status via property: {}", debug);
+                return SystemStatus.valueOf(debug.toUpperCase());
+            }
+
             String osName = System.getProperty("os.name", "").toLowerCase();
             if (!osName.contains("windows")) {
                 LOGGER.debug("TitlebarChanger only supports Windows, detected: {}", osName);
@@ -110,7 +120,7 @@ public final class TitlebarChanger {
         public boolean setWindowCornerPreference(DwmWindowCornerPreference cornerPreference) {
             if (isNotWindows11()) return false;
             var success = setWindowAttribute(DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, cornerPreference.getValue());
-            return saveConfigIfSuccess(success, config -> config.setCorner(cornerPreference));
+            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setCorner(cornerPreference));
         }
 
         @Override
@@ -123,7 +133,7 @@ public final class TitlebarChanger {
 
             var success = setWindowAttribute(DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
                     attribute == DwmWindowThemeAttribute.DARK ? 1 : 0);
-            return saveConfigIfSuccess(success, config -> config.setTheme(attribute));
+            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setTheme(attribute));
         }
 
         @Override
@@ -131,7 +141,7 @@ public final class TitlebarChanger {
             if (isNotWindows11()) return false;
             if (!isCustomThemeAttribute(getConfig())) return false;
             var success = setWindowAttribute(DwmWindowAttribute.DWMWA_CAPTION_COLOR, color.toHexInt());
-            return saveConfigIfSuccess(success, config -> config.setCaptionColor(color));
+            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setCaptionColor(color));
         }
 
         @Override
@@ -139,7 +149,7 @@ public final class TitlebarChanger {
             if (isNotWindows11()) return false;
             if (!isCustomThemeAttribute(getConfig())) return false;
             var success = setWindowAttribute(DwmWindowAttribute.DWMWA_BORDER_COLOR, color.toHexInt());
-            return saveConfigIfSuccess(success, config -> config.setBorderColor(color));
+            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setBorderColor(color));
         }
 
         @Override
@@ -147,20 +157,20 @@ public final class TitlebarChanger {
             if (isNotWindows11()) return false;
             if (!isCustomThemeAttribute(getConfig())) return false;
             var success = setWindowAttribute(DwmWindowAttribute.DWMWA_TEXT_COLOR, color.toHexInt());
-            return saveConfigIfSuccess(success, config -> config.setTextColor(color));
+            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setTextColor(color));
         }
 
         @Override
         public boolean loadStyle() {
             var config = getConfig();
             if (config == null) {
-                throw new IllegalArgumentException("Config cannot be null");
+                throw new IllegalArgumentException("TitlebarChangerConfig cannot be null");
             }
 
             boolean allSuccess = true;
 
             try {
-                if (!isOtherPlatform()) return false;
+                if (isOtherPlatform()) return false;
 
                 if (!setDarkMode(config.getTheme())) {
                     LOGGER.warn("Failed to apply dark mode setting: {}", config.getTheme());
@@ -204,7 +214,7 @@ public final class TitlebarChanger {
         }
 
         @Override
-        public boolean saveConfigIfSuccess(boolean success, Consumer<Config> config) {
+        public boolean saveConfigIfSuccess(boolean success, Consumer<TitlebarChangerConfig> config) {
             if (!success) return false;
             config.accept(getConfig());
             configManager().saveConfig();
