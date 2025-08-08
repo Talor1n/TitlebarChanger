@@ -6,8 +6,8 @@ import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
 import lombok.Setter;
 import net.talor1n.titlebarchanger.TitlebarChanger;
-import net.talor1n.titlebarchanger.utils.color.RGBA;
-import net.talor1n.titlebarchanger.utils.color.RGBAAdapter;
+import net.talor1n.titlebarchanger.utils.color.RGB;
+import net.talor1n.titlebarchanger.utils.color.RGBAdapter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  *   <li>Automatic backup creation for corrupted configs</li>
  *   <li>Modern NIO.2 file operations</li>
  *   <li>Comprehensive validation and error handling</li>
- *   <li>Support for RGBA color objects</li>
+ *   <li>Support for RGB color objects</li>
  * </ul>
  *
  * <h3>Usage:</h3>
@@ -36,7 +36,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * ConfigManager.INSTANCE.initialize(Paths.get("titlebarChangerConfig.json"));
  *
  * // Access configuration
- * TitlebarChangerConfig titlebarChangerConfig = ConfigManager.INSTANCE.getTitlebarChangerConfig();
+ * TitlebarConfig titlebarChangerConfig = ConfigManager.INSTANCE.getTitlebarConfig();
  *
  * // Update and save
  * ConfigManager.INSTANCE.updateAndSave(newConfig);
@@ -54,7 +54,7 @@ public enum ConfigManager {
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .serializeNulls()
-            .registerTypeAdapter(RGBA.class, new RGBAAdapter())
+            .registerTypeAdapter(RGB.class, new RGBAdapter())
             .create();
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
@@ -64,7 +64,7 @@ public enum ConfigManager {
     private Path configPath;
 
     @Getter
-    private volatile TitlebarChangerConfig titlebarChangerConfig;
+    private volatile TitlebarConfig titlebarChangerConfig;
 
     /**
      * Initializes the configuration manager with the specified titlebarChangerConfig file path.
@@ -74,7 +74,7 @@ public enum ConfigManager {
      */
     public void initialize(Path configPath) {
         if (configPath == null) {
-            throw new IllegalArgumentException("TitlebarChangerConfig path cannot be null");
+            throw new IllegalArgumentException("TitlebarConfig path cannot be null");
         }
 
         lock.writeLock().lock();
@@ -116,10 +116,10 @@ public enum ConfigManager {
     private void loadFromFile() {
         try {
             String json = Files.readString(configPath);
-            TitlebarChangerConfig loadedTitlebarChangerConfig = GSON.fromJson(json, TitlebarChangerConfig.class);
+            TitlebarConfig loadedTitlebarConfig = GSON.fromJson(json, TitlebarConfig.class);
 
-            if (isValidConfig(loadedTitlebarChangerConfig)) {
-                this.titlebarChangerConfig = loadedTitlebarChangerConfig;
+            if (isValidConfig(loadedTitlebarConfig)) {
+                this.titlebarChangerConfig = loadedTitlebarConfig;
                 TitlebarChanger.LOGGER.info("Configuration loaded successfully from: {}", configPath);
             } else {
                 TitlebarChanger.LOGGER.warn("Invalid configuration detected, creating backup and using defaults");
@@ -141,7 +141,7 @@ public enum ConfigManager {
      * Creates a default configuration and saves it.
      */
     private void createDefaultConfig() {
-        this.titlebarChangerConfig = TitlebarChangerConfig.builder().build(); // Use builder for default values
+        this.titlebarChangerConfig = TitlebarConfig.builder().build(); // Use builder for default values
         saveConfig();
         TitlebarChanger.LOGGER.info("Created default configuration at: {}", configPath);
     }
@@ -193,62 +193,6 @@ public enum ConfigManager {
         }
     }
 
-    /**
-     * Saves a specific configuration to file without changing the current titlebarChangerConfig.
-     *
-     * @param titlebarChangerConfigToSave the configuration to save
-     * @throws IllegalArgumentException if titlebarChangerConfigToSave is null or invalid
-     * @throws IllegalStateException    if not initialized
-     */
-    public void saveConfig(TitlebarChangerConfig titlebarChangerConfigToSave) {
-        ensureInitialized();
-
-        if (titlebarChangerConfigToSave == null) {
-            throw new IllegalArgumentException("Configuration to save cannot be null");
-        }
-
-        if (!isValidConfig(titlebarChangerConfigToSave)) {
-            throw new IllegalArgumentException("Invalid configuration provided");
-        }
-
-        lock.writeLock().lock();
-        try {
-            TitlebarChangerConfig previousTitlebarChangerConfig = this.titlebarChangerConfig;
-            this.titlebarChangerConfig = titlebarChangerConfigToSave;
-            saveConfig();
-            TitlebarChanger.LOGGER.debug("External configuration saved");
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
-
-    /**
-     * Updates the configuration and automatically saves it to file.
-     *
-     * @param newTitlebarChangerConfig the new configuration to set
-     * @throws IllegalArgumentException if newTitlebarChangerConfig is null or invalid
-     * @throws IllegalStateException    if not initialized
-     */
-    public void updateAndSave(TitlebarChangerConfig newTitlebarChangerConfig) {
-        ensureInitialized();
-
-        if (newTitlebarChangerConfig == null) {
-            throw new IllegalArgumentException("Configuration cannot be null");
-        }
-
-        lock.writeLock().lock();
-        try {
-            if (isValidConfig(newTitlebarChangerConfig)) {
-                this.titlebarChangerConfig = newTitlebarChangerConfig;
-                saveConfig();
-                TitlebarChanger.LOGGER.debug("Configuration updated and saved");
-            } else {
-                throw new IllegalArgumentException("Invalid configuration provided");
-            }
-        } finally {
-            lock.writeLock().unlock();
-        }
-    }
 
     /**
      * Reloads configuration from the file system.
@@ -276,7 +220,7 @@ public enum ConfigManager {
      * @param titlebarChangerConfig the configuration to validate
      * @return true if the configuration is valid
      */
-    private boolean isValidConfig(TitlebarChangerConfig titlebarChangerConfig) {
+    private boolean isValidConfig(TitlebarConfig titlebarChangerConfig) {
         if (titlebarChangerConfig == null) {
             return false;
         }
@@ -284,15 +228,15 @@ public enum ConfigManager {
         try {
             // Check for null theme and corner preferences
             if (titlebarChangerConfig.getTheme() == null || titlebarChangerConfig.getCorner() == null) {
-                TitlebarChanger.LOGGER.debug("TitlebarChangerConfig validation failed: null theme or corner preference");
+                TitlebarChanger.LOGGER.debug("TitlebarConfig validation failed: null theme or corner preference");
                 return false;
             }
 
-            // Validate color objects are not null (they can be RGBA.EMPTY for "no color")
+            // Validate color objects are not null (they can be RGB.EMPTY for "no color")
             if (titlebarChangerConfig.getCaptionColor() == null ||
                     titlebarChangerConfig.getBorderColor() == null ||
                     titlebarChangerConfig.getTextColor() == null) {
-                TitlebarChanger.LOGGER.debug("TitlebarChangerConfig validation failed: null color values");
+                TitlebarChanger.LOGGER.debug("TitlebarConfig validation failed: null color values");
                 return false;
             }
 
@@ -300,7 +244,7 @@ public enum ConfigManager {
             return true;
 
         } catch (Exception e) {
-            TitlebarChanger.LOGGER.debug("TitlebarChangerConfig validation failed with exception: {}", e.getMessage());
+            TitlebarChanger.LOGGER.debug("TitlebarConfig validation failed with exception: {}", e.getMessage());
             return false;
         }
     }
@@ -315,7 +259,7 @@ public enum ConfigManager {
 
         lock.writeLock().lock();
         try {
-            this.titlebarChangerConfig = TitlebarChangerConfig.builder().build();
+            this.titlebarChangerConfig = TitlebarConfig.builder().build();
             saveConfig();
             TitlebarChanger.LOGGER.info("Configuration reset to defaults");
         } finally {

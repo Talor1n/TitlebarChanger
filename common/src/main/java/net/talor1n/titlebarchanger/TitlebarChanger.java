@@ -4,14 +4,11 @@ import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinNT;
-import me.shedaniel.clothconfig2.ClothConfigInitializer;
 import net.minecraft.client.Minecraft;
 import net.talor1n.titlebarchanger.api.TitlebarChangerApi;
-import net.talor1n.titlebarchanger.compat.ClothConfigCompat;
-import net.talor1n.titlebarchanger.config.TitlebarChangerConfig;
 import net.talor1n.titlebarchanger.config.ConfigManager;
-import net.talor1n.titlebarchanger.utils.PlatformHelper;
-import net.talor1n.titlebarchanger.utils.color.RGBA;
+import net.talor1n.titlebarchanger.config.TitlebarConfig;
+import net.talor1n.titlebarchanger.utils.color.RGB;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowAttribute;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowCornerPreference;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute;
@@ -23,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
-import java.util.function.Consumer;
 
 import static net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute.CUSTOM;
 import static net.talor1n.titlebarchanger.utils.win32.SystemStatus.NOT_SUITABLE;
@@ -38,7 +34,7 @@ public final class TitlebarChanger {
         Minecraft.getInstance().execute(api::loadStyle);
     }
 
-    static class TitlebarChangerApiImpl implements TitlebarChangerApi {
+    private static class TitlebarChangerApiImpl implements TitlebarChangerApi {
         private long windowHandle() {
             long glfwWindow = Minecraft.getInstance().getWindow().getWindow();
             return GLFWNativeWin32.glfwGetWin32Window(glfwWindow);
@@ -52,7 +48,7 @@ public final class TitlebarChanger {
             return ConfigManager.INSTANCE;
         }
 
-        private TitlebarChangerConfig getConfig() {
+        private TitlebarConfig getConfig() {
             return configManager().getTitlebarChangerConfig();
         }
 
@@ -103,6 +99,8 @@ public final class TitlebarChanger {
                         new WinDef.DWORD(4)
                 );
 
+                DwmApi.refreshNonClient(windowHwnd());
+
                 boolean success = result.intValue() == 0;
                 if (!success) {
                     LOGGER.warn("Failed to set window attribute {}: HRESULT = 0x{}",
@@ -119,45 +117,37 @@ public final class TitlebarChanger {
         @Override
         public boolean setWindowCornerPreference(DwmWindowCornerPreference cornerPreference) {
             if (isNotWindows11()) return false;
-            var success = setWindowAttribute(DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, cornerPreference.getValue());
-            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setCorner(cornerPreference));
+            return setWindowAttribute(DwmWindowAttribute.DWMWA_WINDOW_CORNER_PREFERENCE, cornerPreference.getValue());
         }
 
         @Override
         public boolean setDarkMode(DwmWindowThemeAttribute attribute) {
             if (isOtherPlatform()) return false;
 
-            setCaptionColor(EMPTY);
-            setBorderColor(EMPTY);
-            setTextColor(EMPTY);
+            setCaptionColor(RGB.EMPTY);
+            setBorderColor(RGB.EMPTY);
+            setTextColor(RGB.EMPTY);
 
-            var success = setWindowAttribute(DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
+            return setWindowAttribute(DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
                     attribute == DwmWindowThemeAttribute.DARK ? 1 : 0);
-            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setTheme(attribute));
         }
 
         @Override
-        public boolean setCaptionColor(RGBA color) {
+        public boolean setCaptionColor(RGB color) {
             if (isNotWindows11()) return false;
-            if (!isCustomThemeAttribute(getConfig())) return false;
-            var success = setWindowAttribute(DwmWindowAttribute.DWMWA_CAPTION_COLOR, color.toHexInt());
-            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setCaptionColor(color));
+            return setWindowAttribute(DwmWindowAttribute.DWMWA_CAPTION_COLOR, color.toWindowsInt());
         }
 
         @Override
-        public boolean setBorderColor(RGBA color) {
+        public boolean setBorderColor(RGB color) {
             if (isNotWindows11()) return false;
-            if (!isCustomThemeAttribute(getConfig())) return false;
-            var success = setWindowAttribute(DwmWindowAttribute.DWMWA_BORDER_COLOR, color.toHexInt());
-            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setBorderColor(color));
+            return setWindowAttribute(DwmWindowAttribute.DWMWA_BORDER_COLOR, color.toWindowsInt());
         }
 
         @Override
-        public boolean setTextColor(RGBA color) {
+        public boolean setTextColor(RGB color) {
             if (isNotWindows11()) return false;
-            if (!isCustomThemeAttribute(getConfig())) return false;
-            var success = setWindowAttribute(DwmWindowAttribute.DWMWA_TEXT_COLOR, color.toHexInt());
-            return saveConfigIfSuccess(success, titlebarChangerConfig -> titlebarChangerConfig.setTextColor(color));
+            return setWindowAttribute(DwmWindowAttribute.DWMWA_TEXT_COLOR, color.toWindowsInt());
         }
 
         @Override
@@ -211,14 +201,6 @@ public final class TitlebarChanger {
                 LOGGER.error("Exception occurred while loading style", e);
                 return false;
             }
-        }
-
-        @Override
-        public boolean saveConfigIfSuccess(boolean success, Consumer<TitlebarChangerConfig> config) {
-            if (!success) return false;
-            config.accept(getConfig());
-            configManager().saveConfig();
-            return true;
         }
     }
 }

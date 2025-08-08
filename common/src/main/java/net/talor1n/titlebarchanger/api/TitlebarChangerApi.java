@@ -1,13 +1,10 @@
 package net.talor1n.titlebarchanger.api;
 
-import net.talor1n.titlebarchanger.config.TitlebarChangerConfig;
-import net.talor1n.titlebarchanger.utils.color.RGBA;
+import net.talor1n.titlebarchanger.utils.color.RGB;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowAttribute;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowCornerPreference;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute;
 import net.talor1n.titlebarchanger.utils.win32.SystemStatus;
-
-import java.util.function.Consumer;
 
 import static net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute.*;
 import static net.talor1n.titlebarchanger.utils.win32.SystemStatus.*;
@@ -31,12 +28,6 @@ import static net.talor1n.titlebarchanger.utils.win32.SystemStatus.*;
  * @since 1.0
  */
 public interface TitlebarChangerApi {
-    /**
-     * Marker instance representing “no color” or an uninitialized color.
-     * All components (r, g, b, a) are set to –1.
-     */
-    RGBA EMPTY = RGBA.of(-1, -1, -1);
-
     // ========================= PLATFORM CHECKS =========================
 
     /**
@@ -133,7 +124,7 @@ public interface TitlebarChangerApi {
      * {@code false} if the operation failed
      */
     default boolean setSharpDefault() {
-        return setWindowCornerPreference(DwmWindowCornerPreference.DWMWCP_DEFAULT);
+        return setWindowCornerPreference(DwmWindowCornerPreference.SYSTEM_DEFAULT);
     }
 
     /**
@@ -143,7 +134,7 @@ public interface TitlebarChangerApi {
      * {@code false} if the operation failed
      */
     default boolean setSharpCorners() {
-        return setWindowCornerPreference(DwmWindowCornerPreference.DWMWCP_DONOTROUND);
+        return setWindowCornerPreference(DwmWindowCornerPreference.NO_ROUNDING);
     }
 
     /**
@@ -153,7 +144,7 @@ public interface TitlebarChangerApi {
      * {@code false} if the operation failed
      */
     default boolean setRoundedCorners() {
-        return setWindowCornerPreference(DwmWindowCornerPreference.DWMWCP_ROUND);
+        return setWindowCornerPreference(DwmWindowCornerPreference.ROUNDED);
     }
 
     /**
@@ -163,7 +154,7 @@ public interface TitlebarChangerApi {
      * {@code false} if the operation failed
      */
     default boolean setSmallRoundedCorners() {
-        return setWindowCornerPreference(DwmWindowCornerPreference.DWMWCP_ROUNDSMALL);
+        return setWindowCornerPreference(DwmWindowCornerPreference.ROUNDED_SMALL);
     }
 
     // ========================= DARK MODE & THEME =========================
@@ -180,10 +171,6 @@ public interface TitlebarChangerApi {
      * {@code false} if the operation failed
      */
     boolean setDarkMode(DwmWindowThemeAttribute dwmWindowThemeAttribute);
-
-    default boolean isCustomThemeAttribute(TitlebarChangerConfig titlebarChangerConfig) {
-        return titlebarChangerConfig.getTheme() == CUSTOM;
-    }
 
     /**
      * Enables dark mode for the window titlebar.
@@ -215,15 +202,15 @@ public interface TitlebarChangerApi {
      * Sets a custom color for the window titlebar caption area.
      *
      * <p>The caption area includes the titlebar background where the window
-     * title text is displayed. This method allows full RGBA color customization
+     * title text is displayed. This method allows full RGB color customization
      * including transparency effects.</p>
      *
-     * @param color the RGBA color to apply to the caption area
+     * @param color the RGB color to apply to the caption area
      * @return {@code true} if the caption color was successfully set,
      * {@code false} if the operation failed
      * @throws IllegalArgumentException if color is null
      */
-    boolean setCaptionColor(RGBA color);
+    boolean setCaptionColor(RGB color);
 
     /**
      * Sets a custom color for the window border.
@@ -231,12 +218,12 @@ public interface TitlebarChangerApi {
      * <p>This affects the thin border line that surrounds the entire window,
      * providing visual separation from other windows and the desktop background.</p>
      *
-     * @param color the RGBA color to apply to the window border
+     * @param color the RGB color to apply to the window border
      * @return {@code true} if the border color was successfully set,
      * {@code false} if the operation failed
      * @throws IllegalArgumentException if color is null
      */
-    boolean setBorderColor(RGBA color);
+    boolean setBorderColor(RGB color);
 
     /**
      * Sets a custom color for the titlebar text.
@@ -244,14 +231,12 @@ public interface TitlebarChangerApi {
      * <p>This affects the window title text and potentially other text elements
      * within the titlebar area, such as control button labels if applicable.</p>
      *
-     * @param color the RGBA color to apply to the titlebar text
+     * @param color the RGB color to apply to the titlebar text
      * @return {@code true} if the text color was successfully set,
      * {@code false} if the operation failed
      * @throws IllegalArgumentException if color is null
      */
-    boolean setTextColor(RGBA color);
+    boolean setTextColor(RGB color);
 
     boolean loadStyle();
-
-    boolean saveConfigIfSuccess(boolean success, Consumer<TitlebarChangerConfig> config);
 }

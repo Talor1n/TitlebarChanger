@@ -1,4 +1,30 @@
 {
+  "title.titlebarchanger.config": "TitlebarChanger Configuration",
+  "category.titlebarchanger.general": "General Settings",
+
+  "titlebarchanger.info.win10": "Windows 10: Only basic themes (Light/Dark) are available. Custom colors and corners are not supported.",
+  "titlebarchanger.unsupported.body": "This operating system is not supported by this mod. The mod only works on Windows.",
+
+  "titlebarchanger.theme": "Window Theme",
+  "titlebarchanger.theme.tooltip": "Select the theme for the window titlebar",
+  "titlebarchanger.theme.light": "Light",
+  "titlebarchanger.theme.dark": "Dark",
+  "titlebarchanger.theme.custom": "Custom",
+
+  "titlebarchanger.corner": "Window Corners",
+  "titlebarchanger.corner.tooltip": "Configure window corner rounding (Windows 11+ only)",
+  "titlebarchanger.corner.system_default": "System Default",
+  "titlebarchanger.corner.no_rounding": "No Rounding",
+  "titlebarchanger.corner.rounded": "Rounded",
+  "titlebarchanger.corner.rounded_small": "Rounded Small",
+
+  "titlebarchanger.captionColor": "Caption Color",
+  "titlebarchanger.captionColor.tooltip": "Color of the window titlebar background (custom theme only)",
+  "titlebarchanger.borderColor": "Border Color",
+  "titlebarchanger.borderColor.tooltip": "Color of the window border (custom theme only)",
+  "titlebarchanger.textColor": "Text Color",
+  "titlebarchanger.textColor.tooltip": "Color of the titlebar text (custom theme only)",
+
   "gui.titlebar_settings": "Window Settings",
   "gui.window_theme_dark": "Theme: Dark",
   "gui.window_theme_light": "Theme: Light",
