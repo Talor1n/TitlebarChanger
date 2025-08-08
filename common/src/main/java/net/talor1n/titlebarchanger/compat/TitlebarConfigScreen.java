@@ -1,10 +1,6 @@
 package net.talor1n.titlebarchanger.compat;
 
-import me.shedaniel.clothconfig2.api.AbstractConfigListEntry;
-import me.shedaniel.clothconfig2.api.ConfigBuilder;
-import me.shedaniel.clothconfig2.api.ConfigCategory;
-import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.api.Requirement;
+import me.shedaniel.clothconfig2.api.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -33,23 +29,24 @@ import static net.talor1n.titlebarchanger.compat.TitlebarConfigLimitedTheme.toLi
  */
 @SuppressWarnings("UnstableApiUsage")
 public final class TitlebarConfigScreen {
-    private TitlebarConfigScreen() {}
+    private TitlebarConfigScreen() {
+    }
 
     // region i18n keys
-    private static final String T_TITLE                 = "title.titlebarchanger.config";
-    private static final String T_CAT_GENERAL           = "category.titlebarchanger.general";
-    private static final String T_INFO_WIN10            = "titlebarchanger.info.win10";
-    private static final String T_UNSUPPORTED_BODY      = "titlebarchanger.unsupported.body";
-    private static final String T_THEME                 = "titlebarchanger.theme";
-    private static final String T_THEME_TOOLTIP         = "titlebarchanger.theme.tooltip";
-    private static final String T_CORNER                = "titlebarchanger.corner";
-    private static final String T_CORNER_TOOLTIP        = "titlebarchanger.corner.tooltip";
-    private static final String T_CAPTION_COLOR         = "titlebarchanger.captionColor";
+    private static final String T_TITLE = "title.titlebarchanger.config";
+    private static final String T_CAT_GENERAL = "category.titlebarchanger.general";
+    private static final String T_INFO_WIN10 = "titlebarchanger.info.win10";
+    private static final String T_UNSUPPORTED_BODY = "titlebarchanger.unsupported.body";
+    private static final String T_THEME = "titlebarchanger.theme";
+    private static final String T_THEME_TOOLTIP = "titlebarchanger.theme.tooltip";
+    private static final String T_CORNER = "titlebarchanger.corner";
+    private static final String T_CORNER_TOOLTIP = "titlebarchanger.corner.tooltip";
+    private static final String T_CAPTION_COLOR = "titlebarchanger.captionColor";
     private static final String T_CAPTION_COLOR_TOOLTIP = "titlebarchanger.captionColor.tooltip";
-    private static final String T_BORDER_COLOR          = "titlebarchanger.borderColor";
-    private static final String T_BORDER_COLOR_TOOLTIP  = "titlebarchanger.borderColor.tooltip";
-    private static final String T_TEXT_COLOR            = "titlebarchanger.textColor";
-    private static final String T_TEXT_COLOR_TOOLTIP    = "titlebarchanger.textColor.tooltip";
+    private static final String T_BORDER_COLOR = "titlebarchanger.borderColor";
+    private static final String T_BORDER_COLOR_TOOLTIP = "titlebarchanger.borderColor.tooltip";
+    private static final String T_TEXT_COLOR = "titlebarchanger.textColor";
+    private static final String T_TEXT_COLOR_TOOLTIP = "titlebarchanger.textColor.tooltip";
     // endregion
 
     /**
@@ -57,12 +54,13 @@ public final class TitlebarConfigScreen {
      *
      * @return ready-to-open {@link Screen}
      */
-    public static Screen createConfigScreen() {
-        final var cfg        = ConfigManager.INSTANCE.getTitlebarChangerConfig();
-        final boolean windows   = isWindows();
+    public static Screen createConfigScreen(Screen parent) {
+        final var cfg = ConfigManager.INSTANCE.getTitlebarChangerConfig();
+        final boolean windows = isWindows();
         final boolean windows10 = windows && isWindows10();
 
         final ConfigBuilder builder = ConfigBuilder.create()
+                .setParentScreen(parent)
                 .setTitle(Component.translatable(T_TITLE))
                 .setSavingRunnable(() -> {
                     try {
@@ -160,8 +158,11 @@ public final class TitlebarConfigScreen {
                 .setDisplayRequirement(() -> windows10)
                 .build();
 
-        cat.addEntry(themeFull);
-        cat.addEntry(themeLimited);
+        if (windows10) {
+            cat.addEntry(themeLimited);
+        } else {
+            cat.addEntry(themeFull);
+        }
 
         // Compose reusable predicates:
         final var themeIsLight = Requirement.any(
@@ -191,11 +192,9 @@ public final class TitlebarConfigScreen {
                 .setDefaultValue(DwmWindowCornerPreference.SYSTEM_DEFAULT)
                 .setTooltip(Component.translatable(T_CORNER_TOOLTIP))
                 .setSaveConsumer(cfg::setCorner)
-                // Disabled: on Win10 OR when theme == LIGHT
+                // Disabled: on Win10
                 .setRequirement(Requirement.all(
-                        Requirement.not(() -> windows10),
-                        Requirement.not(theme.isLight)
-                ))
+                        Requirement.not(() -> windows10)))
                 .build();
     }
 
@@ -249,12 +248,16 @@ public final class TitlebarConfigScreen {
 
     // region Helpers
 
-    /** @return whether current platform is Windows. */
+    /**
+     * @return whether current platform is Windows.
+     */
     private static boolean isWindows() {
         return !TitlebarChanger.api.isOtherPlatform();
     }
 
-    /** @return whether current OS is Windows 10. */
+    /**
+     * @return whether current OS is Windows 10.
+     */
     private static boolean isWindows10() {
         return TitlebarChanger.api.isWindows10();
     }
@@ -302,5 +305,6 @@ public final class TitlebarConfigScreen {
     /**
      * Bundle of common theme predicates used across entries.
      */
-    private record ThemePredicates(Requirement isLight, Requirement isCustom) {}
+    private record ThemePredicates(Requirement isLight, Requirement isCustom) {
+    }
 }

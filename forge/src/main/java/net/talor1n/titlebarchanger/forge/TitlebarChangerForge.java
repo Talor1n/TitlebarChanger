@@ -17,7 +17,7 @@ public final class TitlebarChangerForge {
 
         if (isModLoaded(ClothConfigInitializer.MOD_ID)) {
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-                    () -> new ConfigScreenHandler.ConfigScreenFactory(((minecraft, parentScreen) -> TitlebarConfigScreen.createConfigScreen())));
+                    () -> new ConfigScreenHandler.ConfigScreenFactory(((minecraft, parentScreen) -> TitlebarConfigScreen.createConfigScreen(parentScreen))));
         }
     }
 

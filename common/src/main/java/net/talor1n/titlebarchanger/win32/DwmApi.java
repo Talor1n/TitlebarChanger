@@ -23,13 +23,15 @@ public interface DwmApi extends StdCallLibrary {
             WinDef.DWORD cbAttribute
     );
 
-    /** Flushes the DWN composition queue. */
+    /**
+     * Flushes the DWN composition queue.
+     */
     WinNT.HRESULT DwmFlush();
 
     /**
      * Minimal refresh for non-client area (titlebar/borders) — useful on Windows 10
      * after calling DwmSetWindowAttribute, when changes don't repaint immediately.
-     *
+     * <p>
      * Does:
      * 1) DwmFlush()
      * 2) SetWindowPos(..., SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER)
@@ -46,9 +48,9 @@ public interface DwmApi extends StdCallLibrary {
             TitlebarChanger.LOGGER.debug("DwmFlush failed: {}", t.toString());
         }
 
-        final int SWP_NOMOVE       = 0x0002;
-        final int SWP_NOSIZE       = 0x0001;
-        final int SWP_NOZORDER     = 0x0004;
+        final int SWP_NOMOVE = 0x0002;
+        final int SWP_NOSIZE = 0x0001;
+        final int SWP_NOZORDER = 0x0004;
         final int SWP_FRAMECHANGED = 0x0020;
 
         try {
@@ -63,7 +65,9 @@ public interface DwmApi extends StdCallLibrary {
         }
     }
 
-    /** Safe instance creation with error handling. */
+    /**
+     * Safe instance creation with error handling.
+     */
     private static DwmApi createInstance() {
         try {
             DwmApi instance = Native.load("dwmapi", DwmApi.class, W32APIOptions.DEFAULT_OPTIONS);

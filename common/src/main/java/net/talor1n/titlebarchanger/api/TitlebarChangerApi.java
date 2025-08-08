@@ -6,7 +6,8 @@ import net.talor1n.titlebarchanger.utils.win32.DwmWindowCornerPreference;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute;
 import net.talor1n.titlebarchanger.utils.win32.SystemStatus;
 
-import static net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute.*;
+import static net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute.DARK;
+import static net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute.LIGHT;
 import static net.talor1n.titlebarchanger.utils.win32.SystemStatus.*;
 
 /**

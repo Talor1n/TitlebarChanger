@@ -16,8 +16,8 @@ public final class TitlebarChangerNeoForge {
         TitlebarChanger.init(FMLPaths.CONFIGDIR.get().resolve("titlebar_settings.json"));
 
         if (isModLoaded(ClothConfigInitializer.MOD_ID)) {
-            ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, ()->
-                    (modContainer, parentScreen)-> TitlebarConfigScreen.createConfigScreen());
+            ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () ->
+                    (modContainer, parentScreen) -> TitlebarConfigScreen.createConfigScreen(parentScreen));
         }
     }
 

@@ -26,13 +26,19 @@ import lombok.experimental.Accessors;
 @ToString
 @JsonAdapter(RGBAdapter.class)
 public class RGB {
-    /** Red component [0–255]. */
+    /**
+     * Red component [0–255].
+     */
     private int r;
 
-    /** Green component [0–255]. */
+    /**
+     * Green component [0–255].
+     */
     private int g;
 
-    /** Blue component [0–255]. */
+    /**
+     * Blue component [0–255].
+     */
     private int b;
 
     /**
@@ -46,6 +52,7 @@ public class RGB {
     public static RGB of(int r, int g, int b) {
         return new RGB(clamp(r), clamp(g), clamp(b));
     }
+
     /**
      * Creates a new RGB instance from a HEX integer {@code 0xRRGGBB}.
      * Alpha channel is not supported and will be ignored if present.
@@ -59,6 +66,7 @@ public class RGB {
         int b = hexInt & 0xFF;
         return of(r, g, b);
     }
+
     /**
      * Parses a HEX string in the format {@code "#RRGGBB"} or {@code "RRGGBB"}.
      *
@@ -95,6 +103,7 @@ public class RGB {
         }
         return String.format("#%02X%02X%02X", clamp(r), clamp(g), clamp(b));
     }
+
     /**
      * Converts this RGB color to a HEX integer in the format {@code 0xRRGGBB}.
      * Alpha channel is not included.
@@ -107,6 +116,7 @@ public class RGB {
         }
         return (clamp(r) << 16) | (clamp(g) << 8) | clamp(b);
     }
+
     /**
      * Converts this RGB color to Windows BGR (COLORREF) format {@code 0x00BBGGRR}.
      *
@@ -166,6 +176,6 @@ public class RGB {
         return r == -1 && g == -1 && b == -1;
     }
 
-    public static final RGB BLACK = RGB.of(0,0,0);
+    public static final RGB BLACK = RGB.of(0, 0, 0);
     public static final RGB EMPTY = new RGB(-1, -1, -1);
 }

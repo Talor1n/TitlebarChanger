@@ -107,8 +107,7 @@ public interface Ntdll extends StdCallLibrary {
          */
         public OSVERSIONINFOEX() {
             super();
-            // Устанавливаем размер ПОСЛЕ того, как структура создана
-            write();  // Убеждаемся что память выделена
+            write();
             dwOSVersionInfoSize = new WinDef.DWORD(size());
         }
     }
@@ -142,85 +141,32 @@ public interface Ntdll extends StdCallLibrary {
                 return SystemStatus.NOT_SUITABLE;
             }
 
-            // Читаем данные из нативной памяти
             info.read();
 
             int major = info.dwMajorVersion.intValue();
             int minor = info.dwMinorVersion.intValue();
             int build = info.dwBuildNumber.intValue();
 
-            // Windows 11 (build >= 22000) - полная поддержка всех функций
             if (major == 10 && build >= WIN11_BUILD_THRESHOLD) {
                 TitlebarChanger.LOGGER.debug("Detected Windows 11 (build {}). Full feature support available.", build);
                 return SystemStatus.SUITABLE;
             }
 
-            // Windows 10 с поддержкой темной темы titlebar (build >= 17763)
             if (major == 10 && build >= MIN_WIN10_BUILD) {
                 TitlebarChanger.LOGGER.warn("Detected Windows 10 (build {}). Limited feature support - custom colors and advanced corner settings unavailable.", build);
                 return SystemStatus.LIMITED_SUITABILITY;
             }
 
-            // Windows 10 без поддержки темной темы titlebar (build < 17763)
             if (major == 10) {
                 TitlebarChanger.LOGGER.error("Detected Windows 10 (build {}) - too old. Requires Windows 10 build {} or later for titlebar theming support.", build, MIN_WIN10_BUILD);
                 return SystemStatus.NOT_SUITABLE;
             }
 
-            // Все остальные версии (Windows 8.1, 7, etc.)
             TitlebarChanger.LOGGER.error("Unsupported Windows version: {}.{} (build {}). Requires Windows 10 build {} or later.", major, minor, build, MIN_WIN10_BUILD);
             return SystemStatus.NOT_SUITABLE;
         } catch (Exception e) {
             TitlebarChanger.LOGGER.error("Exception while checking Windows version: {}", e.getMessage(), e);
             return SystemStatus.NOT_SUITABLE;
-        }
-    }
-
-    /**
-     * Checks if the current Windows version supports advanced titlebar features
-     * (custom colors, advanced corner settings).
-     *
-     * @return true if Windows 11 or later, false otherwise
-     */
-    static boolean supportsAdvancedFeatures() {
-        if (INSTANCE == null) return false;
-
-        try {
-            OSVERSIONINFOEX info = new OSVERSIONINFOEX();
-            int result = INSTANCE.RtlGetVersion(info);
-            if (result != 0) return false;
-
-            info.read();
-            int major = info.dwMajorVersion.intValue();
-            int build = info.dwBuildNumber.intValue();
-
-            return major == 10 && build >= WIN11_BUILD_THRESHOLD;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Checks if the current Windows version supports basic titlebar theming
-     * (light/dark theme switching).
-     *
-     * @return true if Windows 10 build 17763 or later, false otherwise
-     */
-    static boolean supportsBasicTheming() {
-        if (INSTANCE == null) return false;
-
-        try {
-            OSVERSIONINFOEX info = new OSVERSIONINFOEX();
-            int result = INSTANCE.RtlGetVersion(info);
-            if (result != 0) return false;
-
-            info.read();
-            int major = info.dwMajorVersion.intValue();
-            int build = info.dwBuildNumber.intValue();
-
-            return major == 10 && build >= MIN_WIN10_BUILD;
-        } catch (Exception e) {
-            return false;
         }
     }
 }

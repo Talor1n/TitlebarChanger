@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import net.talor1n.titlebarchanger.TitlebarChanger;
+import net.talor1n.titlebarchanger.utils.ConfigComment;
 import net.talor1n.titlebarchanger.utils.color.RGB;
 import net.talor1n.titlebarchanger.utils.color.RGBAdapter;
 
@@ -165,34 +167,42 @@ public enum ConfigManager {
     /**
      * Saves the current configuration to file.
      *
-     * @throws IllegalStateException if not initialized or titlebarChangerConfig is null
      */
+    @SneakyThrows
     public void saveConfig() {
-        ensureInitialized();
-
-        if (titlebarChangerConfig == null) {
-            TitlebarChanger.LOGGER.warn("Cannot save: configuration is null");
-            return;
+        if (configPath.getParent() != null) {
+            Files.createDirectories(configPath.getParent());
         }
 
-        lock.readLock().lock();
-        try {
-            // Ensure parent directories exist
-            if (configPath.getParent() != null) {
-                Files.createDirectories(configPath.getParent());
+        StringBuilder sb = new StringBuilder();
+
+        for (var field : TitlebarConfig.class.getDeclaredFields()) {
+            field.setAccessible(true);
+
+            ConfigComment cc = field.getAnnotation(ConfigComment.class);
+            if (cc != null) {
+                for (String line : cc.value()) {
+                    sb.append("    // ").append(line).append("\n");
+                }
+                if (!cc.restriction().isEmpty()) {
+                    sb.append("    // Restriction: ").append(cc.restriction()).append("\n");
+                }
             }
 
-            String json = GSON.toJson(titlebarChangerConfig);
-            Files.writeString(configPath, json);
-
-            TitlebarChanger.LOGGER.debug("Configuration saved to: {}", configPath);
-        } catch (IOException e) {
-            TitlebarChanger.LOGGER.error("Failed to save titlebarChangerConfig to: {} - {}", configPath, e.getMessage());
-        } finally {
-            lock.readLock().unlock();
+            Object value;
+            try {
+                value = field.get(titlebarChangerConfig);
+            } catch (IllegalAccessException e) {
+                continue;
+            }
+            String jsonValue = GSON.toJson(value);
+            sb.append("    \"").append(field.getName()).append("\": ").append(jsonValue).append(",\n\n");
         }
-    }
 
+        String content = "{\n" + sb.toString().replaceAll(",\n\\s*$", "\n") + "}";
+
+        Files.writeString(configPath, content);
+    }
 
     /**
      * Reloads configuration from the file system.
