@@ -1,40 +1,30 @@
 {
-  "title.titlebarchanger.config": "Конфигурация TitlebarChanger",
-  "category.titlebarchanger.general": "Общие настройки",
-  "titlebarchanger.info.win10": "Windows 10: Доступны только базовые темы (Светлая/Тёмная). Пользовательские цвета и углы недоступны.",
-  "titlebarchanger.unsupported.body": "Данная операционная система не поддерживается этим модом. Мод работает только на Windows.",
-  "titlebarchanger.theme": "Тема окна",
-  "titlebarchanger.theme.tooltip": "Выберите тему оформления заголовка окна",
-  "titlebarchanger.theme.light": "Светлая",
-  "titlebarchanger.theme.dark": "Тёмная",
-  "titlebarchanger.theme.custom": "Пользовательская",
-  "titlebarchanger.corner": "Углы окна",
-  "titlebarchanger.corner.tooltip": "Настройка закругления углов окна (только для Windows 11+)",
-  "titlebarchanger.corner.system_default": "По умолчанию",
-  "titlebarchanger.corner.no_rounding": "Прямоугольные",
-  "titlebarchanger.corner.rounded": "Закруглённые",
-  "titlebarchanger.corner.rounded_small": "Слегка закруглённые",
-  "titlebarchanger.captionColor": "Цвет заголовка",
-  "titlebarchanger.captionColor.tooltip": "Цвет фона заголовка окна (только для пользовательской темы)",
+  "title.titlebarchanger.config": "Настройки окна",
+
+  "titlebarchanger.info.win10": "Windows 10: доступны только светлая и тёмная темы. Скругления и цвета недоступны.",
+  "titlebarchanger.unsupported.body": "Ваша ОС не поддерживается. Мод работает только в Windows 10 и выше.",
+
+  "titlebarchanger.theme": "Тема",
+  "titlebarchanger.theme.tooltip": "Светлая/Тёмная — системные стили\nСвоя (Win11+) — ручная настройка",
+
+  "titlebarchanger.corner": "Угол окна",
+  "titlebarchanger.corner.tooltip": "Изменение формы углов (Win11+).",
+
+  "titlebarchanger.captionColor": "Фон заголовка",
+  "titlebarchanger.captionColor.tooltip": "Фон области заголовка (Своя, Win11+).",
+
   "titlebarchanger.borderColor": "Цвет рамки",
-  "titlebarchanger.borderColor.tooltip": "Цвет рамки окна (только для пользовательской темы)",
+  "titlebarchanger.borderColor.tooltip": "Обводка окна (Своя, Win11+).",
+
   "titlebarchanger.textColor": "Цвет текста",
-  "titlebarchanger.textColor.tooltip": "Цвет текста в заголовке окна (только для пользовательской темы)",
-  "gui.titlebar_settings": "Настройки окна",
-  "gui.window_theme_dark": "Тема: Тёмная",
-  "gui.window_theme_light": "Тема: Светлая",
-  "gui.window_theme_custom": "Тема: Пользовательская",
-  "gui.window_style_rectangular": "Угол окна: Прямоугольный",
-  "gui.window_style_default": "Угол окна: По умолчанию",
-  "gui.window_style_semi_rounded": "Угол окна: Закруглённый",
-  "gui.set_titlebar_color": "Настроить цвет окна",
-  "gui.set_titlebar_text_color": "Настроить цвет текста окна",
-  "gui.set_titlebar_stroke_color": "Настроить цвет обводки окна",
-  "gui.red": "Красный",
-  "gui.green": "Зелёный",
-  "gui.blue": "Синий",
-  "gui.warning_title": "Внимание",
-  "gui.warning_desc": "Ваша операционная система устарела для использования мода. Некоторые функции могут быть ограничены. Это сообщение больше не появится.",
-  "gui.warning_desc_not_suitable": "Ваша операционная система не соответствует требованиям для использования мода. Некоторые функции могут работать неправильно или быть ограничены. Это сообщение больше не появится.",
-  "gui.close": "Закрыть"
+  "titlebarchanger.textColor.tooltip": "Текст в заголовке окна (Своя, Win11+).",
+
+  "titlebarchanger.theme.dark": "Тема: Тёмная",
+  "titlebarchanger.theme.light": "Тема: Светлая",
+  "titlebarchanger.theme.custom": "Тема: Своя",
+
+  "titlebarchanger.corner.system_default": "Угол окна: По умолчанию",
+  "titlebarchanger.corner.no_rounding": "Угол окна: Прямоугольный",
+  "titlebarchanger.corner.rounded": "Угол окна: Закруглённый",
+  "titlebarchanger.corner.rounded_small": "Угол окна: Слегка закруглённый"
 }

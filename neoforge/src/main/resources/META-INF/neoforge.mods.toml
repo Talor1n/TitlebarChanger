@@ -7,7 +7,13 @@ modId = "titlebarchanger"
 version = "${version}"
 displayName = "TitlebarChanger"
 authors = "Talor1n"
-description = "Minecraft mod that offers advanced customization of window appearance, including titlebar, title, and border colors. Full functionality is available only on Windows 11; on Windows 10, the mod's features are limited to changing the titlebar color to dark :)"
+description = '''
+TitlebarChanger is a client-side mod that allows you to customize the look of the Minecraft window.
+Features include titlebar text, colors, and border customization.
+
+⚡ On Windows 11: full functionality (custom colors, rounded corners, border styling).
+⚡ On Windows 10: limited support — only Light/Dark theme switching is available.
+'''
 logoFile = "logo.png"
 
 [[dependencies.titlebarchanger]]
@@ -24,6 +30,12 @@ versionRange = "[1.21,)"
 ordering = "NONE"
 side = "CLIENT"
 
+[[dependencies.titlebarchanger]]
+modId = "cloth_config"
+type = "optional"
+versionRange = "[15.0.140,)"
+ordering = "NONE"
+side = "CLIENT"
 
 [[mixins]]
-titlebarChangerConfig = "titlebarchanger.mixins.json"
+config = "titlebarchanger.mixins.json"

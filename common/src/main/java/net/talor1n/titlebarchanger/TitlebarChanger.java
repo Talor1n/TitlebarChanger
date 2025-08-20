@@ -15,6 +15,7 @@ import net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute;
 import net.talor1n.titlebarchanger.utils.win32.SystemStatus;
 import net.talor1n.titlebarchanger.win32.DwmApi;
 import net.talor1n.titlebarchanger.win32.Ntdll;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWNativeWin32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,8 +129,31 @@ public final class TitlebarChanger {
             setBorderColor(RGB.EMPTY);
             setTextColor(RGB.EMPTY);
 
-            return setWindowAttribute(DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
+            var isWindows10 = isWindows10();
+
+            int width = Minecraft.getInstance().getWindow().getWidth();
+            int height = Minecraft.getInstance().getWindow().getHeight();
+
+            // On Windows 10, the dark mode attribute (DWMWA_USE_IMMERSIVE_DARK_MODE)
+            // is not applied immediately. The window frame (non-client area) needs
+            // to be refreshed. To force this refresh, we temporarily resize the
+            // window to (0,0) and then restore the original size.
+            // This "flick" makes Windows redraw the titlebar with the new theme.
+            if (isWindows10) GLFW.glfwSetWindowSize(Minecraft.getInstance().getWindow().getWindow(), 0, 0);
+            var flag = setWindowAttribute(DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
                     attribute == DwmWindowThemeAttribute.DARK ? 1 : 0);
+            if (isWindows10) {
+                try {
+                    Thread.sleep(50L);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                finally {
+                    GLFW.glfwSetWindowSize(Minecraft.getInstance().getWindow().getWindow(), width, height);
+                }
+            }
+
+            return flag;
         }
 
         @Override

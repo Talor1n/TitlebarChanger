@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.talor1n.titlebarchanger.utils.win32.DwmWindowThemeAttribute;
 
 @Getter
-enum TitlebarConfigLimitedTheme {
+public enum TitlebarConfigLimitedTheme {
     LIGHT("titlebarchanger.theme.light"),
     DARK("titlebarchanger.theme.dark");
 

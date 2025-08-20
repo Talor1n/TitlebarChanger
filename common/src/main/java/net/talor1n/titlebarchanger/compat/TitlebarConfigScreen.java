@@ -81,7 +81,6 @@ public final class TitlebarConfigScreen {
             return builder.build();
         }
 
-        // Win10: force theme from CUSTOM to DARK (CUSTOM is not supported there).
         if (windows10 && cfg.getTheme() == DwmWindowThemeAttribute.CUSTOM) {
             cfg.setTheme(DwmWindowThemeAttribute.DARK);
         }
@@ -91,16 +90,12 @@ public final class TitlebarConfigScreen {
         // Build theme entries (full vs limited) and get common predicates.
         final var theme = buildThemeEntries(cat, eb, cfg, windows10);
 
-        // Corner entry (disabled on Win10 and when theme is LIGHT)
         cat.addEntry(buildCornerEntry(eb, cfg, theme, windows10));
 
-        // Colors — available only on Win11+ and only for CUSTOM theme.
         buildColorEntries(cat, eb, cfg, theme, windows10);
 
         return builder.build();
     }
-
-    // region Sections
 
     /**
      * Adds a single unsupported message for non-Windows platforms.
@@ -117,11 +112,13 @@ public final class TitlebarConfigScreen {
      * Adds an info banner (text) that shows only on Windows 10.
      */
     private static void addWin10InfoBanner(ConfigCategory cat, ConfigEntryBuilder eb, boolean windows10) {
-        cat.addEntry(
-                eb.startTextDescription(
-                        Component.translatable(T_INFO_WIN10).withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
-                ).setDisplayRequirement(() -> windows10).build()
-        );
+        if (windows10) {
+            cat.addEntry(
+                    eb.startTextDescription(
+                            Component.translatable(T_INFO_WIN10).withStyle(ChatFormatting.RED, ChatFormatting.BOLD)
+                    ).build()
+            );
+        }
     }
 
     /**
@@ -134,7 +131,7 @@ public final class TitlebarConfigScreen {
             net.talor1n.titlebarchanger.config.TitlebarConfig cfg,
             boolean windows10
     ) {
-        // Full selector (LIGHT/DARK/CUSTOM) — only when NOT Windows 10.
+
         final var themeFull = eb.startEnumSelector(
                         Component.translatable(T_THEME),
                         DwmWindowThemeAttribute.class,
@@ -146,7 +143,7 @@ public final class TitlebarConfigScreen {
                 .setDisplayRequirement(() -> !windows10)
                 .build();
 
-        // Limited selector (LIGHT/DARK) — only on Windows 10.
+
         final var themeLimited = eb.startEnumSelector(
                         Component.translatable(T_THEME),
                         TitlebarConfigLimitedTheme.class,
@@ -164,7 +161,7 @@ public final class TitlebarConfigScreen {
             cat.addEntry(themeFull);
         }
 
-        // Compose reusable predicates:
+
         final var themeIsLight = Requirement.any(
                 Requirement.isValue(themeFull, DwmWindowThemeAttribute.LIGHT),
                 Requirement.isValue(themeLimited, TitlebarConfigLimitedTheme.LIGHT)
@@ -300,7 +297,6 @@ public final class TitlebarConfigScreen {
                 .setRequirement(requirement)
                 .build();
     }
-    // endregion
 
     /**
      * Bundle of common theme predicates used across entries.

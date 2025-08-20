@@ -9,8 +9,7 @@ import lombok.Getter;
  * through the DWM API to customize window appearance and behavior.
  */
 @Getter
-public
-enum DwmWindowAttribute {
+public enum DwmWindowAttribute {
     /**
      * Use immersive dark mode (Windows 10 1903+)
      */

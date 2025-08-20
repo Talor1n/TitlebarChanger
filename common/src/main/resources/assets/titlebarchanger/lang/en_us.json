@@ -1,40 +1,30 @@
 {
-  "title.titlebarchanger.config": "TitlebarChanger Configuration",
-  "category.titlebarchanger.general": "General Settings",
-  "titlebarchanger.info.win10": "Windows 10: Only basic themes (Light/Dark) are available. Custom colors and corners are not supported.",
-  "titlebarchanger.unsupported.body": "This operating system is not supported by this mod. The mod only works on Windows.",
-  "titlebarchanger.theme": "Window Theme",
-  "titlebarchanger.theme.tooltip": "Select the theme for the window titlebar",
-  "titlebarchanger.theme.light": "Light",
-  "titlebarchanger.theme.dark": "Dark",
-  "titlebarchanger.theme.custom": "Custom",
-  "titlebarchanger.corner": "Window Corners",
-  "titlebarchanger.corner.tooltip": "Configure window corner rounding (Windows 11+ only)",
-  "titlebarchanger.corner.system_default": "System Default",
-  "titlebarchanger.corner.no_rounding": "No Rounding",
-  "titlebarchanger.corner.rounded": "Rounded",
-  "titlebarchanger.corner.rounded_small": "Rounded Small",
-  "titlebarchanger.captionColor": "Caption Color",
-  "titlebarchanger.captionColor.tooltip": "Color of the window titlebar background (custom theme only)",
+  "title.titlebarchanger.config": "Window Settings",
+
+  "titlebarchanger.info.win10": "Windows 10: only Light and Dark themes are available. Rounded corners and colors are not supported.",
+  "titlebarchanger.unsupported.body": "Your operating system is not supported. The mod works only on Windows 10 and above.",
+
+  "titlebarchanger.theme": "Theme",
+  "titlebarchanger.theme.tooltip": "Light/Dark — system styles\nCustom (Win11+) — manual configuration",
+
+  "titlebarchanger.corner": "Window Corner",
+  "titlebarchanger.corner.tooltip": "Change the shape of window corners (Win11+).",
+
+  "titlebarchanger.captionColor": "Titlebar Background",
+  "titlebarchanger.captionColor.tooltip": "Background color of the titlebar (Custom, Win11+).",
+
   "titlebarchanger.borderColor": "Border Color",
-  "titlebarchanger.borderColor.tooltip": "Color of the window border (custom theme only)",
+  "titlebarchanger.borderColor.tooltip": "Window border color (Custom, Win11+).",
+
   "titlebarchanger.textColor": "Text Color",
-  "titlebarchanger.textColor.tooltip": "Color of the titlebar text (custom theme only)",
-  "gui.titlebar_settings": "Window Settings",
-  "gui.window_theme_dark": "Theme: Dark",
-  "gui.window_theme_light": "Theme: Light",
-  "gui.window_theme_custom": "Theme: Custom",
-  "gui.window_style_rectangular": "Window Corner: Rectangular",
-  "gui.window_style_default": "Window Corner: Default",
-  "gui.window_style_semi_rounded": "Window Corner: Semi Rounded",
-  "gui.set_titlebar_color": "Customize Window Color",
-  "gui.set_titlebar_text_color": "Customize Window Text Color",
-  "gui.set_titlebar_stroke_color": "Customize Window Stroke Color",
-  "gui.red": "Red",
-  "gui.green": "Green",
-  "gui.blue": "Blue",
-  "gui.warning_title": "Warning",
-  "gui.warning_desc": "Your operating system has an earlier version than is required to use this mod. Some functions may be limited. This message will be shown only once.",
-  "gui.warning_desc_not_suitable": "Your operating system does not meet the requirements for this mod. The mod may not function properly, and some features could be limited. This message will be shown only once.",
-  "gui.close": "Close"
+  "titlebarchanger.textColor.tooltip": "Text color in the titlebar (Custom, Win11+).",
+
+  "titlebarchanger.theme.dark": "Theme: Dark",
+  "titlebarchanger.theme.light": "Theme: Light",
+  "titlebarchanger.theme.custom": "Theme: Custom",
+
+  "titlebarchanger.corner.system_default": "Corner: Default",
+  "titlebarchanger.corner.no_rounding": "Corner: Square",
+  "titlebarchanger.corner.rounded": "Corner: Rounded",
+  "titlebarchanger.corner.rounded_small": "Corner: Slightly Rounded"
 }

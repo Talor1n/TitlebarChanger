@@ -36,21 +36,21 @@ public class TitlebarConfig {
 
     @ConfigComment(value = {
             "Caption (titlebar) background color",
-            "Format: #RRGGBB or -1 for default"
+            "Format: #RRGGBB"
     }, restriction = "Only works when theme is CUSTOM (2)")
     @Builder.Default
     private RGB captionColor = RGB.of(5, 5, 5);
 
     @ConfigComment(value = {
             "Window border color",
-            "Format: #RRGGBB or -1 for default"
+            "Format: #RRGGBB"
     }, restriction = "Only works when theme is CUSTOM (2)")
     @Builder.Default
     private RGB borderColor = RGB.of(0, 255, 0);
 
     @ConfigComment(value = {
             "Title text and button color",
-            "Format: #RRGGBB or -1 for default"
+            "Format: #RRGGBB"
     }, restriction = "Only works when theme is CUSTOM (2)")
     @Builder.Default
     private RGB textColor = RGB.of(0, 255, 0);

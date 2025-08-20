@@ -26,7 +26,6 @@ import static net.talor1n.titlebarchanger.utils.win32.SystemStatus.*;
  * </ul>
  *
  * @author talor1n
- * @since 1.0
  */
 public interface TitlebarChangerApi {
     // ========================= PLATFORM CHECKS =========================
