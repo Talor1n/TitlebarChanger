@@ -32,7 +32,7 @@ side = "CLIENT"
 
 [[dependencies.titlebarchanger]]
 modId = "cloth_config"
-type = "optional"
+mandatory = false
 versionRange = "[15.0.140,)"
 ordering = "NONE"
 side = "CLIENT"
