@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[47,)"
+loaderVersion = "[46,)"
 license = "GNU GPL 3.0"
 
 [[mods]]
@@ -19,20 +19,20 @@ logoFile = "logo.png"
 [[dependencies.titlebarchanger]]
 modId = "forge"
 mandatory = true
-versionRange = "[51,)"
+versionRange = "[46,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.titlebarchanger]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.21,)"
+versionRange = "[1.20,1.20.1]"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.titlebarchanger]]
 modId = "cloth_config"
-type = "optional"
-versionRange = "[15.0.140,)"
+mandatory = false
+versionRange = "[11.1.136,)"
 ordering = "NONE"
 side = "CLIENT"

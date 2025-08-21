@@ -141,7 +141,8 @@ public final class TitlebarChanger {
             // This "flick" makes Windows redraw the titlebar with the new theme.
             if (isWindows10) GLFW.glfwSetWindowSize(Minecraft.getInstance().getWindow().getWindow(), 0, 0);
             var flag = setWindowAttribute(DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE,
-                    attribute == DwmWindowThemeAttribute.DARK ? 1 : 0);
+                    attribute == DwmWindowThemeAttribute.DARK
+                            || (isWindows10 && attribute == DwmWindowThemeAttribute.CUSTOM) ? 1 : 0);
             if (isWindows10) {
                 try {
                     Thread.sleep(50L);
